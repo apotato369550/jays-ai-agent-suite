@@ -97,6 +97,7 @@ I use AI agents as instruments, not as autonomous systems.
 **Humans decide. Agents execute.**
 
 The pattern:
+
 - Intent is explicit and complete before delegation
 - Scope is bounded hard (which files to read, when to stop, what to ignore)
 - Agents are called sequentially with human review gates between phases
@@ -119,6 +120,7 @@ The tradeoff is real: this is slower than full autonomy, less impressive than ag
 Use DETERMINISTIC COMMANDS such as bash commands: 'grep', and the like WHENEVER POSSIBLE, to reduce token count when looking for context within codebases, and when trying to check on agent's progress.
 
 **Boundaries for agents:**
+
 - 3-4 attempts max on debugging, then stop and report
 - Never default to trial-and-error; ask if stuck
 - Report immediately when assumptions are unclear
@@ -126,6 +128,55 @@ Use DETERMINISTIC COMMANDS such as bash commands: 'grep', and the like WHENEVER 
 - Don't make decisions about what comes next
 
 The goal is leverage without delegation of judgment. Agents amplify capacity; humans preserve intent.
+
+---
+
+## Scalpel and Shears
+
+Projects fall into two archetypes, each requiring different agent behavior.
+
+**Scalpel projects** (precision, structured, serious work): These emphasize clarity, deliberate design, and formal documentation. They typically evolve from exploratory work into systems that others depend on or that carry real constraints (performance, security, correctness). Scalpel projects expect ARCHITECTURE.md, README.md, CHANGELOG.md, git discipline, and structured commit messages.
+
+**Shears projects** (creative, exploratory, vibe-based hobby work): These are experimental, intuition-driven, or playful. They prioritize velocity, iteration, and learning over structure. A shears project may have no documentation, loose commit messages, or exploratory code paths. The artifact matters more than the process.
+
+Agents are tool enablers, not restrictors. Default file assumptions—ARCHITECTURE.md, README.md, CHANGELOG.md—apply to scalpel projects. They are not universal requirements. Agents should detect what structure exists in a project and adapt.
+
+Exercise judgment: A docs-sync-manager in a shears project should write documentation to /docs or whatever location fits the project's actual practice, not force ARCHITECTURE.md into a creative hobby codebase. An architect-agent should recognize when a project is deliberately unstructured and adjust reporting accordingly.
+
+The test: Does the agent help accomplish the human's intent within the project's actual context, or does it impose structure where it doesn't belong? Agents should serve the project, not the other way around.
+
+---
+
+## Parallel vs Sequential Execution
+
+The orchestrator (main agent in the REPL) has sole authority to call other agents.
+
+**When agents run in parallel**: Agents execute in parallel when tasks are independent, scopes do not overlap, and no cross-agent dependencies exist. Example: architect-agent traces one service while debug-investigator analyzes another component simultaneously.
+
+**When agents run sequentially**: Agents execute in sequence when:
+
+- Human explicitly requests sequential order
+- Task dependencies exist (one agent's output becomes another's input)
+- File edits would overlap and conflict
+- The next phase depends on the prior phase's findings
+
+**Scope isolation rules**:
+
+- Agents must not edit the same files simultaneously
+- Each agent reports completion or blockers before the next phase begins
+- Orchestrator receives full status, decides what executes next
+- No implicit handoffs between agents
+
+**Default execution mode**: Parallel when tasks allow it. Sequential is the exception, not the norm. This keeps wall-clock time low and parallelizes independent work.
+
+Each agent reports before the next phase:
+
+- Completion status
+- Blockers encountered
+- Findings or artifacts produced
+- Whether it reached assigned boundaries
+
+The orchestrator receives the report, reviews (if needed), and decides: next phase, adjust scope, escalate to human, or terminate.
 
 ---
 
@@ -159,4 +210,5 @@ Ask for clarification only when necessary; otherwise, act.
 
 Created: 2026-01-10
 Last updated: 2026-01-13 -> Added section about deterministic commands
+Last update: 2016-01-18 -> Added section about "scalpel and shears" and about agent orchestration
 *This document describes operating philosophy, not ideology. Update it if your patterns change.*
