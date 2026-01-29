@@ -5,6 +5,8 @@
 *.swo
 *~
 
+sample_data/
+
 # OS files
 .DS_Store
 Thumbs.db
