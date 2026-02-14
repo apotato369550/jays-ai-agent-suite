@@ -8,7 +8,7 @@ This is Jay's agent library for agentic development experimentation. The reposit
 
 ## Core Philosophy
 
-Read INTENT.md and CONTEXT.md before starting work. Key principles:
+Read `philosophy/INTENT.md` and `philosophy/CONTEXT.md` before starting work. Key principles:
 
 - **Intuition-first, structure-second**: Avoid premature frameworks or abstractions
 - **Agents execute, humans decide**: Sequential execution with human review gates between phases
@@ -33,17 +33,23 @@ Each agent is defined in a standalone Markdown file with YAML frontmatter specif
 - Read-only exploration within explicitly requested scope
 - Stops and reports when architecture is unclear or contradictory
 
-**git-commit-haiku** (model: haiku, color: purple)
-- Handles all version control operations (commit, branch, merge, rebase, push)
-- Diagnoses git state before executing operations
-- Stops immediately on conflicts or unclear state
-- Reports with full diagnostics
+**debugger-fixer** (model: haiku, color: green)
+- Applies focused, surgical bug fixes after root cause investigation
+- Receives context from lieutenant (affected files, root cause, proposed direction)
+- Modifies code within clear boundaries; escalates structural changes
+- Maximum 2 fix attempts per bug before reporting
 
 **debug-investigator** (model: haiku, color: cyan)
 - Read-only diagnostic expert for root cause analysis
 - Uses deterministic bash commands for token efficiency
 - Traces execution paths, identifies leaks, finds redundancies
 - Reports findings without proposing fixes
+
+**design-critic** (model: sonnet, color: red)
+- Adversarial review of designs, architectures, and approaches
+- Identifies failure modes, hidden assumptions, edge cases, and scaling cliffs
+- Produces ranked findings (critical, moderate, low) only—no solutions offered
+- Stops when artifact is too underspecified to meaningfully probe
 
 **docs-sync-manager** (model: haiku, color: yellow)
 - Updates README.md and CLAUDE.md based on ARCHITECTURE.md
@@ -56,6 +62,34 @@ Each agent is defined in a standalone Markdown file with YAML frontmatter specif
 - Uses extended thinking for complex problems
 - Token-optimized output with structured formatting
 - 3-4 attempt limit before stopping to report
+
+**git-commit-haiku** (model: haiku, color: purple)
+- Handles all version control operations (commit, branch, merge, rebase, push)
+- Diagnoses git state before executing operations
+- Stops immediately on conflicts or unclear state
+- Reports with full diagnostics
+
+**research-synthesizer** (model: sonnet, color: cyan)
+- Synthesizes multiple technical inputs into concrete recommendations
+- Maps sources against stated constraints; produces ranked decisions
+- Does not explore beyond provided sources; synthesis only, not research
+- Stops when sources are insufficient or constraints are absent
+
+**session-saver** (model: haiku, color: green)
+- Archives and summarizes completed conversation sessions into markdown reports
+- Write-only: no file reads or command execution
+- Produces adaptive structure (brief or verbose) with file references and status
+- Deterministic output from same conversation input
+
+**system-designer** (model: sonnet, color: blue)
+- Synthesizes architecture proposals and design decisions
+- Produces component breakdown, data flow, integration points, tradeoff rationale
+- Does NOT implement code; stops at design boundary
+- Stops when constraints are missing, contradictory, or critically underspecified
+
+**Archived agents** (no longer active):
+- deterministic-tester.md (archived 2026-02-14)
+- intent-mapper.md (archived 2026-02-14)
 
 ## Agent Invocation Pattern
 
@@ -97,24 +131,77 @@ Input → [Step] → [Step] → Output
 
 All agents must respect these hard stops:
 
+**architect-agent**:
+- Stop when architecture is undocumented or contradictory
+- Report gaps rather than inventing documentation
+- Checkpoint at 50% token usage for complex traces
+
+**debugger-fixer**:
+- Maximum 2 fix attempts per bug before reporting
+- Stop immediately at structural boundaries (new files, cross-module changes)
+- Never trial-and-error—ask for clarification if uncertain
+
 **debug-investigator**:
 - Read-only commands only (no rm, mv, cp, sed -i, etc.)
 - Never execute destructive operations
+
+**design-critic**:
+- Stop when artifact is too underspecified to meaningfully probe
+- Report gaps in specification rather than speculating
+- Never propose fixes or alternatives—findings only
+
+**general-workhorse**:
+- Maximum 3-4 debugging attempts before reporting
+- Never trial-and-error - ask when uncertain
+- Report immediately on ambiguity
 
 **git-commit-haiku**:
 - Stop on merge conflicts → report details, ask for resolution
 - Stop on unclear git state → report full diagnostics
 - Stop on ambiguous requests → ask for clarification
 
-**architect-agent**:
-- Stop when architecture is undocumented or contradictory
-- Report gaps rather than inventing documentation
-- Checkpoint at 50% token usage for complex traces
+**research-synthesizer**:
+- Stop when constraints are absent or cannot be inferred
+- Stop when sources are too thin or contradictory for recommendation
+- Never search beyond provided sources unless explicitly authorized for a gap
 
-**general-workhorse**:
-- Maximum 3-4 debugging attempts before reporting
-- Never trial-and-error - ask when uncertain
-- Report immediately on ambiguity
+**session-saver**:
+- Stop if conversation context is empty or unusable
+- Stop if focus area cannot be determined and no descriptor provided
+- Never read files or execute commands
+
+**system-designer**:
+- Stop when constraints are absent, contradictory, or critically underspecified
+- Stop when request drifts into implementation territory
+- Never write implementation code—design artifact only
+
+## Project Structure
+
+```
+agents/
+├── CLAUDE.md                     # This file: agent philosophy and guidance
+├── philosophy/                   # Foundational principles
+│   ├── INTENT.md                 # User's intent and decision authority
+│   ├── CONTEXT.md                # How to reason about this project
+│   ├── LIEUTENANT.md             # Orchestration and agent execution patterns
+│   ├── SCALPEL_PHILOSOPHY.md     # Structured, precision-focused projects
+│   └── SHEARS_TO_SCALPEL.md      # Evolving from exploratory to production
+├── architect-agent.md            # Code flow and architecture tracing
+├── debugger-fixer.md             # Surgical bug fixes
+├── debug-investigator.md         # Root cause analysis (read-only)
+├── design-critic.md              # Adversarial design review
+├── general-workhorse.md          # Build, test, run operations
+├── git-commit-haiku.md           # Version control operations
+├── research-synthesizer.md       # Multi-source synthesis and decisions
+├── session-saver.md              # Conversation archival
+├── system-designer.md            # Architecture proposals and design
+├── archived_agents/              # Inactive agent definitions
+│   ├── deterministic-tester.md
+│   └── intent-mapper.md
+└── sample_data/                  # Example inputs and reference materials
+```
+
+This is a documentation-only repository. Each agent is a standalone markdown file with YAML frontmatter defining name, description, model, and tool access. No build artifacts or runtime code.
 
 ## Token Efficiency Guidelines
 
