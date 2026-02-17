@@ -27,6 +27,19 @@ Each agent is defined in a standalone Markdown file with YAML frontmatter specif
 
 ### Available Agents
 
+**aesthetic-mapper** (model: sonnet, color: magenta)
+- Translates design intent, taste, and visual references into implementation-ready UI specs
+- Reads existing components, tokens, and CSS to understand current visual language
+- Produces component-by-component change specs chunked for parallel workhorse execution
+- Ignores generic design norms unless explicitly invoked; follows user taste
+- Stops when design intent is absent or scope is undefined
+
+**refactor-planner** (model: sonnet, color: yellow)
+- Decomposes bounded code refactors into dependency-aware, parallelizable task lists
+- Reads scoped files, maps internal/external dependencies, identifies change units
+- Produces explicit batches: parallel-safe vs. sequenced, with risk surface flagged
+- Stops when scope, goal, or stability constraints are absent
+
 **architect-agent** (model: haiku, color: blue)
 - Traces code flow and service dependencies
 - Documents architecture in ARCHITECTURE.md with grep-friendly format
@@ -131,6 +144,18 @@ Input → [Step] → [Step] → Output
 
 All agents must respect these hard stops:
 
+**aesthetic-mapper**:
+- Stop when design intent is absent and cannot be inferred from any reference
+- Stop when scope is undefined — cannot spec what hasn't been pointed at
+- Never produce adjective-only specs — every change must be a specific value
+- Never override stated taste with generic norms
+
+**refactor-planner**:
+- Stop when scope, refactor goal, or stability constraints are absent
+- Stop when the dependency graph has a cycle — report and ask for resolution
+- Never write implementation code — plan only
+- Never expand scope beyond what was explicitly provided
+
 **architect-agent**:
 - Stop when architecture is undocumented or contradictory
 - Report gaps rather than inventing documentation
@@ -186,12 +211,14 @@ agents/
 │   ├── LIEUTENANT.md             # Orchestration and agent execution patterns
 │   ├── SCALPEL_PHILOSOPHY.md     # Structured, precision-focused projects
 │   └── SHEARS_TO_SCALPEL.md      # Evolving from exploratory to production
+├── aesthetic-mapper.md           # Design intent → parallelizable UI spec
 ├── architect-agent.md            # Code flow and architecture tracing
 ├── debugger-fixer.md             # Surgical bug fixes
 ├── debug-investigator.md         # Root cause analysis (read-only)
 ├── design-critic.md              # Adversarial design review
 ├── general-workhorse.md          # Build, test, run operations
 ├── git-commit-haiku.md           # Version control operations
+├── refactor-planner.md           # Bounded refactor → parallelizable task list
 ├── research-synthesizer.md       # Multi-source synthesis and decisions
 ├── session-saver.md              # Conversation archival
 ├── system-designer.md            # Architecture proposals and design
