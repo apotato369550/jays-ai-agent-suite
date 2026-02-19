@@ -2,6 +2,18 @@
 
 All notable changes to Jay's agent library are documented here.
 
+## [1.4.0] - 2026-02-17
+
+### Added
+- **aesthetic-mapper agent**: Translates design intent and visual references into implementation-ready UI specs. Reads existing components and produces parallelization-aware change specs for workhorse agents.
+- **refactor-planner agent**: Decomposes bounded code refactors into dependency-aware, parallelizable task lists. Maps change units, identifies parallel-safe batches, and flags risk surfaces.
+
+### Changed
+- Fixed design-critic agent model classification (sonnet, not haiku) in README
+
+### Summary
+Expanded specification capabilities with aesthetic-mapper for UI/design specs and refactor-planner for code restructuring planning. Both agents operate at the specification boundary—they produce plans/specs only, stopping before implementation.
+
 ## [1.3.0] - 2026-02-14
 
 ### Added
@@ -70,8 +82,8 @@ Initial release of agent library with core agents for architecture tracing, vers
 
 ### Model Distribution
 
-- **Haiku** (5 agents): architect, debug-investigator, git-commit-haiku, docs-sync-manager, general-workhorse, debugger-fixer, session-saver, design-critic
-- **Sonnet** (2 agents): system-designer, research-synthesizer
+- **Haiku** (7 agents): architect-agent, debug-investigator, git-commit-haiku, docs-sync-manager, general-workhorse, debugger-fixer, session-saver
+- **Sonnet** (5 agents): aesthetic-mapper, design-critic, refactor-planner, system-designer, research-synthesizer
 
 ### Execution Model
 

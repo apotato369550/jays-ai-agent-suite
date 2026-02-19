@@ -33,11 +33,25 @@ This is a documentation-only repository. Agents are invoked in Claude Code via t
 - Never modifies code; only reports findings
 - Invoke when: "Debug this memory leak" or "Why is X not working?"
 
-**design-critic** (model: haiku, color: magenta)
+**design-critic** (model: sonnet, color: red)
 - Adversarial technical review of architecture and design decisions
 - Identifies hidden assumptions, failure modes, and tradeoff implications
 - Probes weak points in reasoning and unexamined dependencies
 - Invoke when: Design review or critique needed before implementation
+
+### Specification & Planning
+
+**aesthetic-mapper** (model: sonnet, color: magenta)
+- Translates design intent, taste, and visual references into implementation-ready UI specs
+- Reads existing components and tokens; produces parallelization-aware change specs
+- Not a frontend implementer—produces specs only, stops at boundary
+- Invoke when: "What should this look like?" or converting design vision to concrete specs
+
+**refactor-planner** (model: sonnet, color: yellow)
+- Decomposes bounded code refactors into dependency-aware, parallelizable task lists
+- Maps change units and internal dependencies; flags parallel-safe vs. sequenced batches
+- Not an implementer—produces the plan only, stops at boundary
+- Invoke when: "I need to restructure this before adding X" or "Split out the data layer"
 
 ### Design & Planning
 
