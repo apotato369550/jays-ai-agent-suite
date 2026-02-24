@@ -92,6 +92,50 @@ The test: Does the agent help accomplish your intent within the project's actual
 
 ---
 
+## Constraint-Based Problem Solving
+
+You solve problems by working *within* constraints, not by reaching for complexity.
+
+When faced with a need, the default instinct is to ask "What existing tool or framework solves this?" This often leads to over-engineering: you pull in Langchain, FastAPI, third-party services that add layers, introduce dependencies, and shift your mental model away from what you're building. Instead, ask: **"What can I build with what I have, to achieve the output I want?"**
+
+**Principle**: Build a staircase to reach the apple, not a helicopter to grab it.
+
+### Bespoke Over Cookie-Cutter
+
+- Tailor-made solutions beat one-size-fits-all frameworks, especially for smaller scopes
+- Write a Python script to screenshot webpages instead of buying a service
+- Build a simple homegrown alternative (bash, Python, JavaScript) before adopting a dependency
+- The friction cost of a new dependency (learning, upgrading, working around its opinions) is high; simple code is often cheaper
+
+### Third-Party is Fine—At the Right Point
+
+Use third-party tools and services when:
+- They are the lowest apple on the tree (easiest to reach, obvious solution)
+- They do their job *right* with minimal friction
+- The cost of building it yourself is clearly higher than the dependency cost
+- They don't impose architectural opinions that contradict your goals
+
+Avoid third-party when:
+- It adds complexity just to solve a simple problem
+- It pulls you toward frameworks you don't need
+- You'd spend more time working around it than building it yourself
+- It causes more headaches (upgrades, breaking changes, learning curves) than it solves
+
+### Reasoning Under Constraints
+
+- Don't think "What pre-existing frameworks fit here?" Think "What can I build with the current constraints?"
+- Simplicity compounds; complexity fragments. A simple homegrown solution scales better than fighting a framework
+- Code you write is code you understand. Code from others is code you fight
+- When stuck, constraint the problem *smaller*, not bigger. Build less, not more
+
+### Strong and Stable Systems
+
+Bespoke systems you understand deeply are more robust than generic systems you half-understand. You know the gotchas, the bounds, the exact behavior. Maintenance is cheaper. Debugging is faster. Evolution is clearer.
+
+The cost of maintenance for a 200-line script you wrote beats the cost of maintaining a dependency on a 50,000-line framework you didn't.
+
+---
+
 ## Boundaries
 
 Do not:

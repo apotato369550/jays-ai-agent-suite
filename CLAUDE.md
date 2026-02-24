@@ -30,9 +30,23 @@ Each agent is defined in a standalone Markdown file with YAML frontmatter specif
 **aesthetic-mapper** (model: sonnet, color: magenta)
 - Translates design intent, taste, and visual references into implementation-ready UI specs
 - Reads existing components, tokens, and CSS to understand current visual language
-- Produces component-by-component change specs chunked for parallel workhorse execution
+- Produces component-by-component change specs chunked for parallel execution
 - Ignores generic design norms unless explicitly invoked; follows user taste
 - Stops when design intent is absent or scope is undefined
+
+**craftsman-agent** (model: haiku, color: magenta)
+- Implements frontend and UI work from aesthetic-mapper specs or design briefs
+- Builds components, styling, and interactive features with aesthetic integrity
+- Uses extended thinking for complex UX and layout problems
+- Produces clean, maintainable code that matches design intent
+- Stops when design spec is ambiguous or visual intent is absent
+
+**intent-mapper** (model: sonnet, color: green)
+- Constrains ambiguous user intent into grounded, explicit language
+- Decomposes tangled or vague requirements into clear INTENT_XXX.md files
+- Ties output to system semantics (what it does) not syntax (how it's structured)
+- Produces no code, no plans—only linguistic constraint and clarity
+- Stops if intent statements are too incoherent to parse
 
 **refactor-planner** (model: sonnet, color: yellow)
 - Decomposes bounded code refactors into dependency-aware, parallelizable task lists
@@ -102,7 +116,6 @@ Each agent is defined in a standalone Markdown file with YAML frontmatter specif
 
 **Archived agents** (no longer active):
 - deterministic-tester.md (archived 2026-02-14)
-- intent-mapper.md (archived 2026-02-14)
 
 ## Agent Invocation Pattern
 
@@ -149,6 +162,20 @@ All agents must respect these hard stops:
 - Stop when scope is undefined — cannot spec what hasn't been pointed at
 - Never produce adjective-only specs — every change must be a specific value
 - Never override stated taste with generic norms
+
+**craftsman-agent**:
+- Stop when design spec is ambiguous or contradictory—ask for clarification
+- Stop when visual intent is absent or unstated
+- Maximum 3-4 attempts on styling/layout bugs before reporting
+- Never compromise accessibility silently; flag and propose alternatives
+- Never default to trial-and-error—ask if uncertain
+
+**intent-mapper**:
+- Stop when intent statements are too incoherent or contradictory to parse
+- Stop when the user's goal is fundamentally unclear—ask for refinement
+- Never read code or analyze the codebase
+- Never produce executable plans or architectural maps
+- Report ambiguities explicitly; don't resolve them unilaterally
 
 **refactor-planner**:
 - Stop when scope, refactor goal, or stability constraints are absent
@@ -213,18 +240,19 @@ agents/
 │   └── SHEARS_TO_SCALPEL.md      # Evolving from exploratory to production
 ├── aesthetic-mapper.md           # Design intent → parallelizable UI spec
 ├── architect-agent.md            # Code flow and architecture tracing
+├── craftsman-agent.md            # Frontend and UI implementation
 ├── debugger-fixer.md             # Surgical bug fixes
 ├── debug-investigator.md         # Root cause analysis (read-only)
 ├── design-critic.md              # Adversarial design review
 ├── general-workhorse.md          # Build, test, run operations
 ├── git-commit-haiku.md           # Version control operations
+├── intent-mapper.md              # Linguistic constraint and intent clarification
 ├── refactor-planner.md           # Bounded refactor → parallelizable task list
 ├── research-synthesizer.md       # Multi-source synthesis and decisions
 ├── session-saver.md              # Conversation archival
 ├── system-designer.md            # Architecture proposals and design
 ├── archived_agents/              # Inactive agent definitions
-│   ├── deterministic-tester.md
-│   └── intent-mapper.md
+│   └── deterministic-tester.md
 └── sample_data/                  # Example inputs and reference materials
 ```
 
