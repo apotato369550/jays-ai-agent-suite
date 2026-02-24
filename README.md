@@ -41,6 +41,13 @@ This is a documentation-only repository. Agents are invoked in Claude Code via t
 
 ### Specification & Planning
 
+**intent-mapper** (model: sonnet, color: green)
+- Constrains ambiguous user intent into grounded, explicit language
+- Decomposes tangled or vague requirements into clear INTENT_XXX.md files
+- Output tied to system semantics (what it does), not code structure or syntax
+- Read-only analysis of user signals; no code exploration
+- Invoke when: "I have mixed signals about what I want" or "Help me clarify this fuzzy intent"
+
 **aesthetic-mapper** (model: sonnet, color: magenta)
 - Translates design intent, taste, and visual references into implementation-ready UI specs
 - Reads existing components and tokens; produces parallelization-aware change specs
@@ -77,6 +84,13 @@ This is a documentation-only repository. Agents are invoked in Claude Code via t
 - Invoke when: Version control operations needed
 
 ### Execution & Building
+
+**craftsman-agent** (model: haiku, color: magenta)
+- Implements frontend and UI work with aesthetic integrity
+- Works from aesthetic-mapper specs or design briefs
+- Builds components, styling, and interactive features
+- Uses extended thinking for complex UX and layout problems
+- Invoke when: "Build this UI component" or converting design specs to working code
 
 **general-workhorse** (model: haiku, color: red)
 - Handles building, debugging, running code
@@ -160,6 +174,16 @@ When calling agents, provide:
 ```
 
 ## Common Patterns
+
+**Clarifying fuzzy intent, then building:**
+1. Call intent-mapper to constrain vague requirements into clear INTENT files
+2. Call system-designer or aesthetic-mapper based on domain (backend vs UI)
+3. Call appropriate implementation agent (general-workhorse, craftsman-agent)
+
+**Building UI/Frontend from design:**
+1. Call aesthetic-mapper to spec visual design and component structure
+2. Call craftsman-agent to implement components from the spec
+3. Iterate with designer feedback
 
 **Debugging a complex issue:**
 1. Call debug-investigator to trace and diagnose

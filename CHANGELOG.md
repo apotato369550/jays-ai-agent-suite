@@ -2,6 +2,19 @@
 
 All notable changes to Jay's agent library are documented here.
 
+## [1.5.0] - 2026-02-24
+
+### Added
+- **craftsman-agent**: Frontend and UI implementation specialist. Works from aesthetic-mapper specifications or design briefs. Implements components, styling, and interactive features with aesthetic integrity. Establishes aesthetic-mapper → craftsman-agent pipeline mirroring system-designer → general-workhorse.
+- **Constraint-based problem solving philosophy**: New MEMORY.md section codifying the principle of building within constraints rather than reaching for frameworks. Emphasizes bespoke solutions, homegrown alternatives over cookie-cutter complexity, and prioritizing understanding over generic patterns.
+
+### Changed
+- **intent-mapper**: Un-archived and redefined from codebase-mapping agent to linguistic constraint agent. Now takes ambiguous user intent and decomposes it into clear, grounded INTENT_XXX.md files. Output tied to system semantics (what it does) rather than code structure (how it's built).
+- Updated CLAUDE.md and README.md to reflect new agents and philosophy
+
+### Summary
+Expanded library with constraint-focused intent clarification (intent-mapper) and UI implementation (craftsman-agent). Introduced philosophy of building with existing constraints—prefer bespoke, homegrown solutions over framework complexity when the third-party tool isn't the obvious lowest apple on the tree.
+
 ## [1.4.0] - 2026-02-17
 
 ### Added
@@ -82,8 +95,8 @@ Initial release of agent library with core agents for architecture tracing, vers
 
 ### Model Distribution
 
-- **Haiku** (7 agents): architect-agent, debug-investigator, git-commit-haiku, docs-sync-manager, general-workhorse, debugger-fixer, session-saver
-- **Sonnet** (5 agents): aesthetic-mapper, design-critic, refactor-planner, system-designer, research-synthesizer
+- **Haiku** (8 agents): architect-agent, debug-investigator, git-commit-haiku, docs-sync-manager, general-workhorse, debugger-fixer, session-saver, craftsman-agent
+- **Sonnet** (6 agents): aesthetic-mapper, design-critic, intent-mapper, refactor-planner, system-designer, research-synthesizer
 
 ### Execution Model
 
@@ -100,3 +113,14 @@ All versions follow human-in-the-loop orchestration:
 - v1.1.0: Formalized lieutenant orchestration and human decision authority
 - v1.2.0: Extended to design-level reasoning and synthesis
 - v1.3.0: Refined focus on active agent patterns
+- v1.5.0: Added constraint-based problem solving—prefer bespoke, homegrown solutions over framework complexity
+
+### Constraining Ambiguity
+
+Starting in v1.5.0, the library emphasizes **linguistic constraint** and **constraint-based problem solving**:
+
+**Intent-mapper** is the primary vehicle for constraint. Instead of analyzing code or exploring frameworks, it takes vague user signals and turns them into grounded language—INTENT files that are explicit, defensible, and tied to system semantics.
+
+**Constraint-based philosophy** shifts the default question from "What existing tool/framework fits this?" to "What can I build with current constraints to achieve the output I want?" This leads to bespoke solutions (Python scripts, homegrown code) over cookie-cutter frameworks, reducing dependency bloat and increasing understanding.
+
+The tower (staircase) metaphor: Build step-by-step solutions you understand deeply, rather than reaching for clouds.
