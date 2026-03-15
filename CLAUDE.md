@@ -54,19 +54,19 @@ Each agent is defined in a standalone Markdown file with YAML frontmatter specif
 - Produces explicit batches: parallel-safe vs. sequenced, with risk surface flagged
 - Stops when scope, goal, or stability constraints are absent
 
-**architect-agent** (model: haiku, color: blue)
+**architect-agent** (model: sonnet, color: blue)
 - Traces code flow and service dependencies
-- Documents architecture in ARCHITECTURE.md with grep-friendly format
+- Documents architecture in ARCHITECTURE.md or project-specific architecture folder (e.g., /architecture/, /docs/arch/) with grep-friendly format
 - Read-only exploration within explicitly requested scope
 - Stops and reports when architecture is unclear or contradictory
 
-**debugger-fixer** (model: haiku, color: green)
+**basic-bugfixer** (model: haiku, color: green)
 - Applies focused, surgical bug fixes after root cause investigation
 - Receives context from lieutenant (affected files, root cause, proposed direction)
 - Modifies code within clear boundaries; escalates structural changes
 - Maximum 2 fix attempts per bug before reporting
 
-**debug-investigator** (model: haiku, color: cyan)
+**debug-tracer** (model: haiku, color: cyan)
 - Read-only diagnostic expert for root cause analysis
 - Uses deterministic bash commands for token efficiency
 - Traces execution paths, identifies leaks, finds redundancies
@@ -89,6 +89,12 @@ Each agent is defined in a standalone Markdown file with YAML frontmatter specif
 - Uses extended thinking for complex problems
 - Token-optimized output with structured formatting
 - 3-4 attempt limit before stopping to report
+
+**senior-workhorse** (model: sonnet, color: red)
+- Higher-agency variant of general-workhorse for complex or ambiguous tasks
+- Makes tactical judgment calls, explores relevant context autonomously, tries alternatives without checking in
+- Pushes to 5-6 attempts before calling stuck
+- Reports back when decisions exceed tactical scope or hit a genuine wall
 
 **git-commit-haiku** (model: haiku, color: purple)
 - Handles all version control operations (commit, branch, merge, rebase, push)
@@ -188,12 +194,12 @@ All agents must respect these hard stops:
 - Report gaps rather than inventing documentation
 - Checkpoint at 50% token usage for complex traces
 
-**debugger-fixer**:
+**basic-bugfixer**:
 - Maximum 2 fix attempts per bug before reporting
 - Stop immediately at structural boundaries (new files, cross-module changes)
 - Never trial-and-error—ask for clarification if uncertain
 
-**debug-investigator**:
+**debug-tracer**:
 - Read-only commands only (no rm, mv, cp, sed -i, etc.)
 - Never execute destructive operations
 
@@ -206,6 +212,11 @@ All agents must respect these hard stops:
 - Maximum 3-4 debugging attempts before reporting
 - Never trial-and-error - ask when uncertain
 - Report immediately on ambiguity
+
+**senior-workhorse**:
+- Maximum 5-6 debugging attempts before reporting
+- May make tactical judgment calls without checking in; names assumptions explicitly
+- Confirm before anything destructive or with broad side effects
 
 **git-commit-haiku**:
 - Stop on merge conflicts → report details, ask for resolution
@@ -241,10 +252,11 @@ agents/
 ├── aesthetic-mapper.md           # Design intent → parallelizable UI spec
 ├── architect-agent.md            # Code flow and architecture tracing
 ├── craftsman-agent.md            # Frontend and UI implementation
-├── debugger-fixer.md             # Surgical bug fixes
-├── debug-investigator.md         # Root cause analysis (read-only)
+├── basic-bugfixer.md             # Surgical bug fixes
+├── debug-tracer.md               # Root cause analysis (read-only)
 ├── design-critic.md              # Adversarial design review
 ├── general-workhorse.md          # Build, test, run operations
+├── senior-workhorse.md           # Higher-agency build/debug/run (sonnet)
 ├── git-commit-haiku.md           # Version control operations
 ├── intent-mapper.md              # Linguistic constraint and intent clarification
 ├── refactor-planner.md           # Bounded refactor → parallelizable task list
