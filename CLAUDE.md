@@ -21,11 +21,27 @@ Read `philosophy/INTENT.md` and `philosophy/CONTEXT.md` before starting work. Ke
 Each agent is defined in a standalone Markdown file with YAML frontmatter specifying:
 - `name`: Agent identifier
 - `description`: When and how to invoke the agent
-- `model`: Claude model to use (typically haiku for efficiency)
+- `model`: Claude model to use
 - `color`: Terminal display color
 - `tools`: Optional tool restrictions
 
+### Tier System
+
+Several agent families use a 3-tier model:
+
+| Tier | Model | Agency |
+|------|-------|--------|
+| junior | Haiku | Narrow, explicit scope, 3-4 attempts |
+| senior | Sonnet | Tactical judgment, infers intent, 5-6 attempts |
+| chief | Opus | Full-spectrum reasoning, cross-domain depth, 7-8 attempts |
+
 ### Available Agents
+
+**agent-builder** (model: sonnet, color: yellow)
+- Builds new agents in the established suite style from a spec
+- Reads existing agents for style calibration before writing
+- Produces complete, deployment-ready .md files
+- Asks one sharp question if spec is critically ambiguous; otherwise builds and reports
 
 **aesthetic-mapper** (model: sonnet, color: magenta)
 - Translates design intent, taste, and visual references into implementation-ready UI specs
@@ -38,14 +54,12 @@ Each agent is defined in a standalone Markdown file with YAML frontmatter specif
 - Implements frontend and UI work from aesthetic-mapper specs or design briefs
 - Builds components, styling, and interactive features with aesthetic integrity
 - Uses extended thinking for complex UX and layout problems
-- Produces clean, maintainable code that matches design intent
 - Stops when design spec is ambiguous or visual intent is absent
 
 **intent-mapper** (model: sonnet, color: green)
 - Constrains ambiguous user intent into grounded, explicit language
 - Decomposes tangled or vague requirements into clear INTENT_XXX.md files
 - Ties output to system semantics (what it does) not syntax (how it's structured)
-- Produces no code, no plans—only linguistic constraint and clarity
 - Stops if intent statements are too incoherent to parse
 
 **refactor-planner** (model: sonnet, color: yellow)
@@ -54,11 +68,10 @@ Each agent is defined in a standalone Markdown file with YAML frontmatter specif
 - Produces explicit batches: parallel-safe vs. sequenced, with risk surface flagged
 - Stops when scope, goal, or stability constraints are absent
 
-**architect-agent** (model: sonnet, color: blue)
-- Traces code flow and service dependencies
-- Documents architecture in ARCHITECTURE.md or project-specific architecture folder (e.g., /architecture/, /docs/arch/) with grep-friendly format
-- Read-only exploration within explicitly requested scope
-- Stops and reports when architecture is unclear or contradictory
+**Architect family** (color: blue)
+- **junior-architect** (haiku) — narrow trace-and-document; single service/endpoint/function chain; strict scope
+- **senior-architect** (sonnet) — multi-service audits, creates architecture docs at will, identifies structural improvement areas
+- **chief-architect** (opus) — full system auditor; synthesizes health, risk, and improvements across system from docs/contracts/patterns
 
 **basic-bugfixer** (model: haiku, color: green)
 - Applies focused, surgical bug fixes after root cause investigation
@@ -66,17 +79,16 @@ Each agent is defined in a standalone Markdown file with YAML frontmatter specif
 - Modifies code within clear boundaries; escalates structural changes
 - Maximum 2 fix attempts per bug before reporting
 
-**debug-tracer** (model: haiku, color: cyan)
-- Read-only diagnostic expert for root cause analysis
-- Uses deterministic bash commands for token efficiency
-- Traces execution paths, identifies leaks, finds redundancies
-- Reports findings without proposing fixes
+**Design Critic family** (color: red)
+- **junior-design-critic** (haiku) — narrow bug finder; concrete simple bugs in explicit scope; read-only, grep-first, no proposals
+- **senior-design-critic** (sonnet) — adversarial design/architecture review; ranked findings across correctness, scale, edge cases, assumptions, coupling, cost
+- **chief-design-critic** (opus) — deep investigative reasoning; root cause patterns, systemic risk, cascade/spill analysis, security implications
 
-**design-critic** (model: sonnet, color: red)
-- Adversarial review of designs, architectures, and approaches
-- Identifies failure modes, hidden assumptions, edge cases, and scaling cliffs
-- Produces ranked findings (critical, moderate, low) only—no solutions offered
-- Stops when artifact is too underspecified to meaningfully probe
+**tracer-explorer** (model: haiku, color: cyan)
+- Fast, constrained codebase exploration; find files, trace patterns, map structure
+- Read-only recon — surfaces what exists, no writing, no fixes, no proposals
+- Use for quick orientation, locating files by pattern, keyword search across a codebase
+- Tighter and faster than a full architecture trace
 
 **docs-sync-manager** (model: haiku, color: yellow)
 - Updates README.md and CLAUDE.md based on ARCHITECTURE.md
@@ -84,17 +96,10 @@ Each agent is defined in a standalone Markdown file with YAML frontmatter specif
 - Does not analyze codebase or modify other files
 - Maintains present-tense, factual documentation
 
-**general-workhorse** (model: haiku, color: red)
-- Handles building, debugging, running code
-- Uses extended thinking for complex problems
-- Token-optimized output with structured formatting
-- 3-4 attempt limit before stopping to report
-
-**senior-workhorse** (model: sonnet, color: red)
-- Higher-agency variant of general-workhorse for complex or ambiguous tasks
-- Makes tactical judgment calls, explores relevant context autonomously, tries alternatives without checking in
-- Pushes to 5-6 attempts before calling stuck
-- Reports back when decisions exceed tactical scope or hit a genuine wall
+**Workhorse family** (color: red)
+- **junior-workhorse** (haiku) — straightforward, well-scoped build/debug/run tasks; 3-4 attempts; executes without judgment calls
+- **senior-workhorse** (sonnet) — complex or ambiguous tasks; makes tactical calls, explores adjacent context, tries alternatives without checking in; 5-6 attempts
+- **chief-workhorse** (opus) — deepest reasoning; handles cross-domain, architecturally complex, or ambiguous tasks that senior hits a wall on; 7-8 attempts
 
 **git-commit-haiku** (model: haiku, color: purple)
 - Handles all version control operations (commit, branch, merge, rebase, push)
@@ -133,7 +138,7 @@ Each agent is defined in a standalone Markdown file with YAML frontmatter specif
 
 ## Documentation Standards
 
-**ARCHITECTURE.md format** (when created by architect-agent):
+**Architecture doc format** (when created by architect family):
 ```markdown
 ## [Service Name] Service
 
@@ -163,6 +168,11 @@ Input → [Step] → [Step] → Output
 
 All agents must respect these hard stops:
 
+**agent-builder**:
+- Stop when purpose is genuinely ambiguous and would produce two different agents
+- Ask one sharp question if spec is critically ambiguous; otherwise build and report
+- Never write placeholder sections or copy-paste a full agent body unchanged
+
 **aesthetic-mapper**:
 - Stop when design intent is absent and cannot be inferred from any reference
 - Stop when scope is undefined — cannot spec what hasn't been pointed at
@@ -174,11 +184,9 @@ All agents must respect these hard stops:
 - Stop when visual intent is absent or unstated
 - Maximum 3-4 attempts on styling/layout bugs before reporting
 - Never compromise accessibility silently; flag and propose alternatives
-- Never default to trial-and-error—ask if uncertain
 
 **intent-mapper**:
 - Stop when intent statements are too incoherent or contradictory to parse
-- Stop when the user's goal is fundamentally unclear—ask for refinement
 - Never read code or analyze the codebase
 - Never produce executable plans or architectural maps
 - Report ambiguities explicitly; don't resolve them unilaterally
@@ -187,36 +195,59 @@ All agents must respect these hard stops:
 - Stop when scope, refactor goal, or stability constraints are absent
 - Stop when the dependency graph has a cycle — report and ask for resolution
 - Never write implementation code — plan only
-- Never expand scope beyond what was explicitly provided
 
-**architect-agent**:
-- Stop when architecture is undocumented or contradictory
+**junior-architect**:
+- Strict scope only — no exploration beyond direct call chain
+- Stop and report when architecture is unclear or contradictory
+- 3-4 file checkpoint before continuing
+
+**senior-architect**:
 - Report gaps rather than inventing documentation
-- Checkpoint at 50% token usage for complex traces
+- Checkpoint at 5-6 files for complex traces
+
+**chief-architect**:
+- Never implement — stops at architecture boundary
+- Label confidence level on all synthesis claims
+- Stop when cross-service analysis requires information not available
 
 **basic-bugfixer**:
 - Maximum 2 fix attempts per bug before reporting
 - Stop immediately at structural boundaries (new files, cross-module changes)
 - Never trial-and-error—ask for clarification if uncertain
 
-**debug-tracer**:
-- Read-only commands only (no rm, mv, cp, sed -i, etc.)
-- Never execute destructive operations
+**junior-design-critic**:
+- Stop if artifact is too underspecified to probe
+- Never propose fixes or escalate scope to design/architecture concerns
+- 3-4 targeted operations max before reporting
 
-**design-critic**:
+**senior-design-critic**:
 - Stop when artifact is too underspecified to meaningfully probe
-- Report gaps in specification rather than speculating
 - Never propose fixes or alternatives—findings only
 
-**general-workhorse**:
+**chief-design-critic**:
+- Root Cause Patterns section requires at least 2 findings sharing a structural contributor
+- Systemic Risk entries require a traceable cascade path
+- Stop when cross-cutting analysis requires runtime/deployment knowledge not in artifact
+
+**tracer-explorer**:
+- Read-only only — no writes, no modifications, no destructive commands
+- Stop if scope is undefined
+- Report findings compressed; do not narrate process
+
+**junior-workhorse**:
 - Maximum 3-4 debugging attempts before reporting
-- Never trial-and-error - ask when uncertain
+- Never trial-and-error — ask when uncertain
 - Report immediately on ambiguity
 
 **senior-workhorse**:
 - Maximum 5-6 debugging attempts before reporting
 - May make tactical judgment calls without checking in; names assumptions explicitly
 - Confirm before anything destructive or with broad side effects
+
+**chief-workhorse**:
+- Maximum 7-8 attempts before reporting stuck
+- Confirm before anything destructive, irreversible, or with broad side effects
+- Escalate strategic decisions to human regardless of confidence level
 
 **git-commit-haiku**:
 - Stop on merge conflicts → report details, ask for resolution
@@ -226,7 +257,7 @@ All agents must respect these hard stops:
 **research-synthesizer**:
 - Stop when constraints are absent or cannot be inferred
 - Stop when sources are too thin or contradictory for recommendation
-- Never search beyond provided sources unless explicitly authorized for a gap
+- Never search beyond provided sources unless explicitly authorized
 
 **session-saver**:
 - Stop if conversation context is empty or unusable
@@ -249,20 +280,27 @@ agents/
 │   ├── LIEUTENANT.md             # Orchestration and agent execution patterns
 │   ├── SCALPEL_PHILOSOPHY.md     # Structured, precision-focused projects
 │   └── SHEARS_TO_SCALPEL.md      # Evolving from exploratory to production
+├── agent-builder.md              # Build new agents in established style
 ├── aesthetic-mapper.md           # Design intent → parallelizable UI spec
-├── architect-agent.md            # Code flow and architecture tracing
-├── craftsman-agent.md            # Frontend and UI implementation
 ├── basic-bugfixer.md             # Surgical bug fixes
-├── debug-tracer.md               # Root cause analysis (read-only)
-├── design-critic.md              # Adversarial design review
-├── general-workhorse.md          # Build, test, run operations
-├── senior-workhorse.md           # Higher-agency build/debug/run (sonnet)
+├── chief-architect.md            # Full system auditor (opus)
+├── chief-design-critic.md        # Deep bug/vulnerability investigation (opus)
+├── chief-workhorse.md            # Max-agency build/debug/run (opus)
+├── craftsman-agent.md            # Frontend and UI implementation
+├── docs-sync-manager.md          # README/CLAUDE sync from ARCHITECTURE.md
 ├── git-commit-haiku.md           # Version control operations
 ├── intent-mapper.md              # Linguistic constraint and intent clarification
+├── junior-architect.md           # Narrow trace-and-document (haiku)
+├── junior-design-critic.md       # Narrow bug finder (haiku)
+├── junior-workhorse.md           # Straightforward build/debug/run (haiku)
 ├── refactor-planner.md           # Bounded refactor → parallelizable task list
 ├── research-synthesizer.md       # Multi-source synthesis and decisions
+├── senior-architect.md           # Multi-service audit and architecture (sonnet)
+├── senior-design-critic.md       # Adversarial design/architecture review (sonnet)
+├── senior-workhorse.md           # Higher-agency build/debug/run (sonnet)
 ├── session-saver.md              # Conversation archival
 ├── system-designer.md            # Architecture proposals and design
+├── tracer-explorer.md            # Fast read-only codebase recon (haiku)
 ├── archived_agents/              # Inactive agent definitions
 │   └── deterministic-tester.md
 └── sample_data/                  # Example inputs and reference materials
@@ -286,12 +324,12 @@ This is a documentation-only repository. Each agent is a standalone markdown fil
 - Edit agent .md files directly
 - Update CLAUDE.md when agent patterns evolve
 - Use git-commit-haiku agent for version control operations
+- Use agent-builder agent when adding new agents
 
 **Adding New Agents**:
-- Create new .md file with YAML frontmatter
-- Define clear scope boundaries and failure modes
-- Specify token efficiency strategies
-- Document when agent should/shouldn't be used
+- Invoke agent-builder with: name, purpose, tier/model, scope, constraints
+- agent-builder reads the suite for style calibration and produces the .md file
+- Update CLAUDE.md after adding
 
 ## Human Authority
 
