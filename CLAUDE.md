@@ -73,11 +73,17 @@ Several agent families use a 3-tier model:
 - **senior-architect** (sonnet) — multi-service audits, creates architecture docs at will, identifies structural improvement areas
 - **chief-architect** (opus) — full system auditor; synthesizes health, risk, and improvements across system from docs/contracts/patterns
 
-**basic-bugfixer** (model: haiku, color: green)
-- Applies focused, surgical bug fixes after root cause investigation
-- Receives context from lieutenant (affected files, root cause, proposed direction)
-- Modifies code within clear boundaries; escalates structural changes
-- Maximum 2 fix attempts per bug before reporting
+**skill-builder** (model: sonnet, color: yellow)
+- Builds Claude Code skills (slash commands) in the established suite style
+- Reads existing skills for calibration before writing
+- Produces complete SKILL.md files in correct subdirectory
+- Distinguishes delegation skills (invoke agent via Task tool) from inline skills (direct Claude instructions)
+- Asks one sharp question if delegation vs. inline type is ambiguous; otherwise builds and reports
+
+**Bugfixer family** (color: green)
+- **junior-bugfixer** (haiku) — surgical fixes with fully explicit context from lieutenant; max 2 attempts; hard-stops at structural boundaries
+- **senior-bugfixer** (sonnet) — infers root cause from symptoms, explores adjacent files, makes tactical fix decisions; max 4 attempts
+- **chief-bugfixer** (opus) — cross-module and cascading bugs; characterizes structural changes rather than stopping; max 6 attempts
 
 **Design Critic family** (color: red)
 - **junior-design-critic** (haiku) — narrow bug finder; concrete simple bugs in explicit scope; read-only, grep-first, no proposals
@@ -119,14 +125,15 @@ Several agent families use a 3-tier model:
 - Produces adaptive structure (brief or verbose) with file references and status
 - Deterministic output from same conversation input
 
-**system-designer** (model: sonnet, color: blue)
-- Synthesizes architecture proposals and design decisions
-- Produces component breakdown, data flow, integration points, tradeoff rationale
-- Does NOT implement code; stops at design boundary
-- Stops when constraints are missing, contradictory, or critically underspecified
+**System Designer family** (color: blue)
+- **junior-system-designer** (haiku) — single-component specs and binary tradeoffs; explicit constraints required; no free-form synthesis; max 3-4 reads
+- **senior-system-designer** (sonnet) — multi-component design, system-level data flow, infers soft constraints from context; stops at implementation boundary
+- **chief-system-designer** (opus) — resolves ambiguous/contradictory constraints, navigates competing architectural philosophies, surfaces second-order consequences; justifies Opus cost when constraints are part of the design problem
 
 **Archived agents** (no longer active):
 - deterministic-tester.md (archived 2026-02-14)
+- basic-bugfixer.md (archived 2026-03-26, superseded by junior/senior/chief-bugfixer family)
+- system-designer.md (archived 2026-03-26, superseded by junior/senior/chief-system-designer family)
 
 ## Agent Invocation Pattern
 
@@ -210,10 +217,20 @@ All agents must respect these hard stops:
 - Label confidence level on all synthesis claims
 - Stop when cross-service analysis requires information not available
 
-**basic-bugfixer**:
+**junior-bugfixer**:
 - Maximum 2 fix attempts per bug before reporting
 - Stop immediately at structural boundaries (new files, cross-module changes)
 - Never trial-and-error—ask for clarification if uncertain
+
+**senior-bugfixer**:
+- Maximum 4 fix attempts before reporting
+- Name every hypothesis before following it; no silent assumption changes
+- Escalate to chief-bugfixer when cross-module tracing is required
+
+**chief-bugfixer**:
+- Maximum 6 attempts before reporting stuck
+- Characterize structural changes rather than stopping — produce blast radius + decision needed
+- Never paper over a systemic root cause with a local fix
 
 **junior-design-critic**:
 - Stop if artifact is too underspecified to probe
@@ -264,10 +281,25 @@ All agents must respect these hard stops:
 - Stop if focus area cannot be determined and no descriptor provided
 - Never read files or execute commands
 
-**system-designer**:
-- Stop when constraints are absent, contradictory, or critically underspecified
+**skill-builder**:
+- Stop when delegation target agent does not exist — report rather than writing a broken skill
+- Ask one sharp question if delegation vs. inline type is genuinely ambiguous
+- Never add model/color/tools fields to skill frontmatter
+
+**junior-system-designer**:
+- Stop when hard constraints are absent — ask one sharp question
+- Escalate to senior-system-designer when scope exceeds one component or two options
+- Max 3-4 file reads before producing output
+
+**senior-system-designer**:
+- Stop when constraints are absent and cannot be inferred
 - Stop when request drifts into implementation territory
 - Never write implementation code—design artifact only
+
+**chief-system-designer**:
+- Attempt to resolve constraint contradictions rather than stopping on them
+- Label confidence on all synthesis claims ([HIGH]/[MED]/[LOW])
+- Never write implementation code; stops at design boundary
 
 ## Project Structure
 
@@ -282,7 +314,7 @@ agents/
 │   └── SHEARS_TO_SCALPEL.md      # Evolving from exploratory to production
 ├── agent-builder.md              # Build new agents in established style
 ├── aesthetic-mapper.md           # Design intent → parallelizable UI spec
-├── basic-bugfixer.md             # Surgical bug fixes
+├── chief-bugfixer.md             # Cross-module and cascading bug fixes (opus)
 ├── chief-architect.md            # Full system auditor (opus)
 ├── chief-design-critic.md        # Deep bug/vulnerability investigation (opus)
 ├── chief-workhorse.md            # Max-agency build/debug/run (opus)
@@ -292,14 +324,18 @@ agents/
 ├── intent-mapper.md              # Linguistic constraint and intent clarification
 ├── junior-architect.md           # Narrow trace-and-document (haiku)
 ├── junior-design-critic.md       # Narrow bug finder (haiku)
+├── junior-bugfixer.md            # Surgical bug fixes with explicit context (haiku)
+├── junior-system-designer.md     # Single-component design and binary tradeoffs (haiku)
 ├── junior-workhorse.md           # Straightforward build/debug/run (haiku)
 ├── refactor-planner.md           # Bounded refactor → parallelizable task list
 ├── research-synthesizer.md       # Multi-source synthesis and decisions
 ├── senior-architect.md           # Multi-service audit and architecture (sonnet)
+├── senior-bugfixer.md            # Bug investigation + fix with root cause inference (sonnet)
 ├── senior-design-critic.md       # Adversarial design/architecture review (sonnet)
+├── senior-system-designer.md     # Multi-component design and architecture (sonnet)
 ├── senior-workhorse.md           # Higher-agency build/debug/run (sonnet)
 ├── session-saver.md              # Conversation archival
-├── system-designer.md            # Architecture proposals and design
+├── skill-builder.md              # Build Claude Code skills (SKILL.md files)
 ├── tracer-explorer.md            # Fast read-only codebase recon (haiku)
 ├── archived_agents/              # Inactive agent definitions
 │   └── deterministic-tester.md
